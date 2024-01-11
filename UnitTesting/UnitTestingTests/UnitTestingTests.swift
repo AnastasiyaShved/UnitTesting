@@ -9,28 +9,41 @@ import XCTest
 @testable import UnitTesting
 
 final class UnitTestingTests: XCTestCase {
+    
+    var sut: MathSerice!
 
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        try  super.setUpWithError()
+        sut = MathSerice()
     }
-
+    
     override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        sut = nil
+        try super.tearDownWithError()
     }
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+    func testSummation() {
+        let result = sut.summation(number1: 3, number2: 7)
+        XCTAssert(result == 10, "test sucess")
     }
-
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
+    
+    func testMultiplication()  {
+        let result = sut.multiplication(number1: 3, number2: 7)
+        XCTAssert(result == 21, "test sucess")
+    }
+   
+    func testDivision() throws {
+        XCTAssertThrowsError(try sut.division(number1: 40.9, number2: 0.0)) { error in
+            print(error)
+            XCTAssertEqual(error as? MathError, MathError.divisionToZero("Деление на 0 невозможно"), "test sucess")
         }
+    }
+
+    func testPerformanceSummation() {
+        self.measure (
+            metrics: [XCTClockMetric()]) {
+                sut.multiplication(number1: 90, number2: 1000000)
+            }
     }
 
 }
